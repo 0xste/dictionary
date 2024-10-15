@@ -2644,11 +2644,5 @@ export const chains: Chain[] = [
     chain_id: "xrpl:2",
     protocol: "XRPL",
     network: "Devnet"
-  },
-  {
-    chain_id: ""
-  },
-  {
-    chain_id: ""
   }
 ]

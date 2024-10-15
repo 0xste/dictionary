@@ -296,7 +296,10 @@
         }
       }
     },
-    "/v1/sanctions/check": {
+    "/v1/sanctions/{address}/check": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
       "post": {
         "summary": "Check sanctions",
         "requestBody": {

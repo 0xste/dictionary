@@ -6,7 +6,7 @@
         "module": "$import(@zuplo/runtime)",
         "options": {
           "rateLimitBy": "ip",
-          "requestsAllowed": 6,
+          "requestsAllowed": 60,
           "timeWindowMinutes": 1
         }
       },
@@ -15,41 +15,11 @@
     },
     {
       "handler": {
-        "export": "ApiKeyInboundPolicy",
-        "module": "$import(@zuplo/runtime)",
-        "options": {
-          "allowUnauthenticatedRequests": false,
-          "cacheTtlSeconds": 60
-        }
-      },
-      "name": "api-key-inbound",
-      "policyType": "api-key-inbound"
-    },
-    {
-      "handler": {
-        "export": "QuotaInboundPolicy",
-        "module": "$import(@zuplo/runtime)",
-        "options": {
-          "allowances": {
-            "requests": 100
-          },
-          "period": "daily",
-          "quotaBy": "user",
-          "quotaOnStatusCodes": "200-399"
-        }
-      },
-      "name": "quota-inbound",
-      "policyType": "quota-inbound"
-    },
-    {
-      "handler": {
         "export": "CompositeInboundPolicy",
         "module": "$import(@zuplo/runtime)",
         "options": {
           "policies": [
-            "api-key-inbound",
-            "rate-limit-inbound",
-            "quota-inbound"
+            "rate-limit-inbound"
           ]
         }
       },

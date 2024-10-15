@@ -37,7 +37,7 @@ export default async function (request: ZuploRequest, context: ZuploContext) {
   }
 
   const page = parseInt(request.query.page_number as string) || 1;
-  const pageSize = parseInt(request.query.page_size as string) || 20;
+  const pageSize = parseInt(request.query.page_size as string) || 1000;
   const startIndex = (page - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const paginatedResults = results.slice(startIndex, endIndex);
