@@ -1,8 +1,344 @@
 {
-  "openapi": "3.1.0",
   "info": {
-    "version": "1.0.0",
-    "title": "My Zuplo API"
+    "title": "Chain and Geo API",
+    "version": "1.0.0"
   },
-  "paths": {}
+  "openapi": "3.1.0",
+  "components": {
+    "parameters": {
+      "pageSize": {
+        "in": "query",
+        "name": "page_size",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "description": "Number of items to return per page"
+      },
+      "pageNumber": {
+        "in": "query",
+        "name": "page_number",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "description": "Page number to return"
+      }
+    },
+    "schemas": {
+      "PaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ChainInfo"
+                },
+                {
+                  "$ref": "#/components/schemas/CountryCode"
+                }
+              ]
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationInfo"
+          }
+        }
+      },
+      "PaginationInfo": {
+        "type": "object",
+        "properties": {
+          "total_items": {
+            "type": "integer"
+          },
+          "total_pages": {
+            "type": "integer"
+          },
+          "current_page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          }
+        }
+      },
+      "ChainInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "protocol": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          }
+        }
+      },
+      "CountryCode": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string"
+          },
+          "short_name": {
+            "type": "string"
+          },
+          "alpha2_code": {
+            "type": "string"
+          },
+          "alpha3_code": {
+            "type": "string"
+          },
+          "numeric_code": {
+            "type": "string"
+          }
+        }
+      },
+      "SanctionsCheckRequest": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "chain_id": {
+            "type": "string"
+          }
+        }
+      },
+      "SanctionsCheckResponse": {
+        "type": "object",
+        "properties": {
+          "sanctioned": {
+            "type": "boolean"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "details": {
+            "type": "object",
+            "properties": {
+              "last_seen": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "risk_score": {
+                "type": "integer"
+              }
+            }
+          },
+          "is_sanctioned": {
+            "type": "boolean"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          },
+          "id_uuid": {
+            "type": "string"
+          },
+          "program_list": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/chains": {
+      "get": {
+        "summary": "Get chain information",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "protocol",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "network",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageNumber"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_chains",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "default",
+            "module": "$import(./modules/handlers/get_chains)",
+            "options": {}
+          },
+          "policies": {
+            "inbound": [
+              "composite-inbound"
+            ]
+          }
+        }
+      }
+    },
+    "/v1/country-codes": {
+      "get": {
+        "summary": "Get Country Code information",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "alpha2_code",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "alpha3_code",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "numeric_code",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "full_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "short_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/pageNumber"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get_countrycodes",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "default",
+            "module": "$import(./modules/handlers/get_countrycodes)",
+            "options": {}
+          },
+          "policies": {
+            "inbound": [
+              "composite-inbound"
+            ]
+          }
+        }
+      }
+    },
+    "/v1/sanctions/check": {
+      "post": {
+        "summary": "Check sanctions",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SanctionsCheckRequest"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SanctionsCheckResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post_sanction_info",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "default",
+            "module": "$import(./modules/handlers/post_sanctions)",
+            "options": {}
+          },
+          "policies": {
+            "inbound": [
+              "composite-inbound"
+            ]
+          }
+        }
+      }
+    }
+  }
 }
